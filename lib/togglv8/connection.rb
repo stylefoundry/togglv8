@@ -66,10 +66,10 @@ module TogglV8
       return {} if full_resp == {}
       begin
         resp = Oj.load(full_resp.body)
-        return resp['data'] if resp.respond_to?(:has_key?) && resp.has_key?('data')
-        return resp
+        return wrap_response resp['data'] if resp.respond_to?(:has_key?) && resp.has_key?('data')
+        return wrap_response resp
       rescue Oj::ParseError
-        return full_resp.body
+        return wrap_response full_resp.body
       end
     end
 
@@ -79,7 +79,7 @@ module TogglV8
                   api_call: lambda { self.conn.post(resource, Oj.dump(data)) } )
       return {} if full_resp == {}
       resp = Oj.load(full_resp.body)
-      resp['data']
+      wrap_response resp['data']
     end
 
     def put(resource, data='')
@@ -88,7 +88,7 @@ module TogglV8
                   api_call: lambda { self.conn.put(resource, Oj.dump(data)) } )
       return {} if full_resp == {}
       resp = Oj.load(full_resp.body)
-      resp['data']
+      wrap_response resp['data']
     end
 
     def delete(resource)
@@ -96,7 +96,17 @@ module TogglV8
       full_resp = _call_api(debug_output: lambda { "DELETE #{resource}" },
                   api_call: lambda { self.conn.delete(resource) } )
       return {} if full_resp == {}
-      full_resp.body
+      wrap_response full_resp.body
+    end
+    
+    private
+    
+    def wrap_response(response)
+      if response.is_a? Hash
+        HashWithIndifferentAccess.new response
+      else
+        response
+      end
     end
   end
 end
