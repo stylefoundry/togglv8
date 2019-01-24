@@ -35,7 +35,7 @@ module TogglV8
       for f in fields
       errors.push("params[#{f}] is required") unless indifferentParams.has_key?(f)
       end
-      raise ArgumentError, errors.join(', ') if !errors.empty?
+      raise ArgumentError, errors.join(', ') unless errors.empty?
     end
 
     def _call_api(procs)
