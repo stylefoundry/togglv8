@@ -29,8 +29,11 @@ module TogglV8
       raise ArgumentError, 'params is not a Hash' unless params.is_a? Hash
       return if fields.empty?
       errors = []
+      # Use HashWithIndifferentAccess so that we can treat params['a'] and
+      # params[:a] as both satisfying 'a' requirement
+      indifferentParams = HashWithIndifferentAccess.new params
       for f in fields
-      errors.push("params[#{f}] is required") unless params.has_key?(f)
+      errors.push("params[#{f}] is required") unless indifferentParams.has_key?(f)
       end
       raise ArgumentError, errors.join(', ') if !errors.empty?
     end
