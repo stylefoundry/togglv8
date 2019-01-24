@@ -30,4 +30,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "logger"
   spec.add_dependency "faraday"
   spec.add_dependency "oj"
+  spec.add_dependency "activesupport"
 end
