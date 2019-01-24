@@ -104,6 +104,8 @@ module TogglV8
     def wrap_response(response)
       if response.is_a? Hash
         HashWithIndifferentAccess.new response
+      elsif response.is_a? Array
+        response.map{ |r| wrap_response r }
       else
         response
       end
